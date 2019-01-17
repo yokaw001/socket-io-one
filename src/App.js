@@ -6,17 +6,25 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-    
+            username: '',
+            
         };
 
     }
-  render() {
-    return (
-      <div>
-          <Chat/>
-      </div>
-    );
-  }
+    handleInput = (e) => {
+        let name = e.target.id;
+        this.setState({
+            [name]: e.target.value
+        })
+    }
+    render() {
+        return (
+        <div>
+            <Login />
+            <Chat/>
+        </div>
+        );
+    }
 }
 
 export default App;

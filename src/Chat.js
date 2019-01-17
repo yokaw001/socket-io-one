@@ -31,7 +31,7 @@ class Chat extends React.Component{
     }
     sendMessage = (e) => {
         e.preventDefault();
-        this.socket.emit('SEND_MESSAGE', {
+        this.socket.emit('SEND', {
             author: this.state.username,
             message: this.state.message
         });

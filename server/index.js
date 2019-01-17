@@ -1,6 +1,7 @@
-var express = require('express');
-var app = express();
-var path = require('path');
+const express = require('express');
+const app = express();
+const path = require('path');
+const socket = require('socket.io');
 
 server = app.listen(3000, function(){
     console.log('server is running on port 3000')
@@ -8,12 +9,10 @@ server = app.listen(3000, function(){
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 
-var socket = require('socket.io');
 io = socket(server);
-
 io.on('connection', (socket) => {
-    console.log(socket.id);
-    socket.on('SEND_MESSAGE', function(data){
+    console.log(socket.id, 'this be the id');
+    socket.on('SEND', function(data){
       io.emit('RECEIVE_MESSAGE', data);
     })
     // client.on('register', handleRegister)
