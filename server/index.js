@@ -11,8 +11,10 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 
 io = socket(server);
 io.on('connection', (socket) => {
+    io.emit('NEW_USER', socket.id)
     console.log(socket.id, 'this be the id');
     socket.on('SEND', function(data){
+      console.log(data, 'dataa')
       io.emit('RECEIVE_MESSAGE', data);
     })
     // client.on('register', handleRegister)
