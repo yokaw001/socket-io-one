@@ -11,12 +11,18 @@ class Chat extends React.Component{
             message: '',
             messages: []
         };
-        this.socket = io('localhost:3000');
+        // this.socket = io('localhost:3000');
         this.sendMessage = this.sendMessage.bind(this);
         this.handleInput = this.handleInput.bind(this);
-        this.socket.on('RECEIVE_MESSAGE', function(data){
+        this.props.socket.on('RECEIVE_MESSAGE', (data) => {
             addMessage(data);
         });     
+        this.props.socket.on('COUNT', (data) => addCount(data));
+
+        const addCount = data => {
+            console.log(data, 'should be count')
+            this.setState({playerCount: data})
+        }
         const addMessage = data => {
             console.log(data);
             this.setState({messages: [...this.state.messages, data]});
@@ -31,7 +37,7 @@ class Chat extends React.Component{
     }
     sendMessage = (e) => {
         e.preventDefault();
-        this.socket.emit('SEND', {
+        this.props.socket.emit('SEND', {
             author: this.props.username,
             message: this.state.message
         });
