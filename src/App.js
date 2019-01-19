@@ -22,14 +22,19 @@ class App extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleViewChange = this.handleViewChange.bind(this);
+        socket.on('ALLPLAYERS', (data) => { 
+            this.setState({
+                allUsers: data
+            })
+            console.log(this.state.allUsers,'all users')
+        });
         socket.on('NEW_USER', (data) => {
             if(this.state.userid === ''){
-                console.log('here is here', data)
                 this.setState({
                     userid: data
                 });
             } 
-        });     
+        });  
     }
     componentDidMount(){
 
@@ -43,13 +48,7 @@ class App extends React.Component {
             [name]: e.target.value
         })
     }
-    handleSubmit = (e) => {
-        socket.on('ALLPLAYERS', (data) => { 
-            this.setState({
-                allUsers: data
-            })
-            console.log(this.state.allUsers,'all users')
-        })
+    handleSubmit = () => {
         let newuser = {userid: this.state.userid, username: this.state.username}
                 console.log('reached here')
                 socket.emit('NEW_USER', newuser)

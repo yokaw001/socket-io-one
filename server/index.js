@@ -17,7 +17,7 @@ io.on('connection', (socket) => {
     io.emit('NEW_USER', socket.id);
     io.emit('COUNT', playerCount);
     socket.on('NEW_USER', (data) => {
-      allPlayers[data.userid] = data.username;
+      allPlayers[data.userid] = data.username; //saving socketid username pairs
       console.log(allPlayers, 'dataa')
       // io.emit('RECEIVE_MESSAGE', data);
       io.emit('ALLPLAYERS', allPlayers)
