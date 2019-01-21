@@ -69,6 +69,10 @@ io.on('connection', (socket) => {
             allPrompts.splice(randomPrompt, 1)
             assigned = true;
             // console.log('count', allPlayers)
+            for(let i = 0; i < allPlayers.length; i++){
+              io.to(allPlayers[i].userid).emit('CURR_PLAYER', allPlayers[i]);
+            }
+
             io.emit('ALLPLAYERS', allPlayers)
         } 
     })

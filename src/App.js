@@ -17,8 +17,10 @@ class App extends React.Component {
             passcode: '',
             userid:'',
             allPlayers: [],
+            answerq1: '',
+            answerq2: '',
             currView: "Login",
-            currUser: ''
+            currPlayer: ''
             // characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
         };
         this.handleInput = this.handleInput.bind(this);
@@ -27,8 +29,13 @@ class App extends React.Component {
         socket.on('ALLPLAYERS', (data) => { 
             this.setState({
                 allPlayers: data
-            })
+            });
         });
+        socket.on('CURR_PLAYER', (data) => {
+            this.setState({
+                currPlayer: data
+            }, ()=>console.log(data, 'currplayer here cuhhh'))
+        })
         socket.on('PASSCODE', (data) => {
             this.setState({
                 passcode: data
@@ -80,7 +87,7 @@ class App extends React.Component {
         <div>
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
             {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
-            {currView !== "Answer" ? <a></a> : <Answer allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "Answer" ? <a></a> : <Answer currPlayer = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
         </div>
         );
     }
