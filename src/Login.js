@@ -3,8 +3,9 @@ import React from 'react';
 const Login = (props) => {
     return (
         <div>
-            <input type="text" onChange={props.handleInput} id="username" placeholder="Username" className="form-control"/>
-            <button type="submit" title="WaitRoom" onClick={props.handleSubmit} >Submit</button>
+            <input type="text" onChange={props.handleInput} id="passcode" placeholder="passcode" className="form-control"/>
+            <input type="text" onChange={props.handleInput} id="username" placeholder="username" className="form-control"/>
+            <button type="submit" title="WaitRoom" onClick={props.handleSubmit} >Create or Join Game</button>
         </div>
     )
 }

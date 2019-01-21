@@ -13,6 +13,7 @@ class App extends React.Component {
 
         this.state = {
             username: '',
+            passcode: '',
             userid:'',
             signedIn: false,
             allUsers: [],
@@ -48,10 +49,16 @@ class App extends React.Component {
             [name]: e.target.value
         })
     }
-    handleSubmit = () => {
-        let newuser = {userid: this.state.userid, username: this.state.username}
-                console.log('reached here')
-                socket.emit('NEW_USER', newuser)
+    handleSubmit = (e) => {
+        let changeView = e.target.title;
+        this.setState({
+            currView: changeView
+        })
+        let newuser = {userid: this.state.userid, username: this.state.username, points: 0, prompts: {}};
+        socket.emit('JOIN_GAME', {
+            passcode: this.state.passcode,
+            newuser: newuser
+        })
     }
     handleViewChange = (e) => {
         let nextView = e.target.title;
