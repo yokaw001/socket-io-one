@@ -18,8 +18,8 @@ class App extends React.Component {
             passcode: '',
             userid:'',
             allPlayers: [],
-            answerq1: '',
-            answerq2: '',
+            ques1: '',
+            ques2: '',
             currView: "Login",
             currPlayer: ''
             // characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
@@ -53,12 +53,7 @@ class App extends React.Component {
             } 
         });  
     }
-    componentDidMount(){
 
-    }
-    componentWillUnmount(){
-       
-    }
     handleInput = (e) => {
         let name = e.target.id;
         this.setState({
@@ -75,6 +70,17 @@ class App extends React.Component {
             passcode: this.state.passcode,
             newuser: newuser
         })
+        if(this.state.ques1 && this.state.ques2){
+            let currPlayer = this.state.currPlayer;
+            let promptsObj = currPlayer.prompts;
+            let prompts =[];
+            for(let key in prompts){
+                prompts.push(key);
+            }
+            currPlayer.prompts[prompts[0]] = this.state.ques1;
+            currPlayer.prompts[prompts[1]] = this.state.ques2;
+            socket.emit('UPDATED_PLAYER', currPlayer)
+        }
     }
     handleViewChange = (e) => {
         let nextView = e.target ? e.target.title : e;
@@ -84,6 +90,7 @@ class App extends React.Component {
     }
     render() {
         let currView = this.state.currView;
+        console.log('ques1', this.state.ques1, 'ques2', this.state.ques2)
         return (
         <div>
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}

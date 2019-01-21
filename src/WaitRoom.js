@@ -3,6 +3,7 @@ import React from 'react';
 const WaitRoom = (props) => {
     let playerCount = props.allPlayers.length;
     let playersLeft = 4-playerCount;
+    // if(playerCount === 4){() => props.handleViewChange("Answer")}
     if(playerCount === 4){props.handleViewChange("Answer")}
     return (
         <div>

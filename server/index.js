@@ -18,11 +18,6 @@ let allPrompts = ['One word to describe yourself', 'Most epic sandwich name', 'W
 
 io = socket(server);
 io.on('connection', (socket) => {
-    // playerCount++;
-    // allUserIds.push(socket.id);
-    // userId[socket.id] = {};
-    // userId[socket.id]['hello'] = 'testing';
-    // userPrompts[socket.id] = 0;
     io.emit('NEW_USER', socket.id);
     io.emit('COUNT', playerCount);
     if(serverPasscode) {io.emit('PASSCODE', serverPasscode);}
@@ -46,7 +41,6 @@ io.on('connection', (socket) => {
 
         if(playerCount === 4 && assigned === false){ // assign random prompts to two users for comparison
           // idiot figure out a function asap
-          // console.log('its hitting')
             let randomPrompt = Math.floor(Math.random() * (allPrompts.length));
             allPlayers[0].prompts[allPrompts[randomPrompt]] = 'answer';
             allPlayers[1].prompts[allPrompts[randomPrompt]] = 'answer';
@@ -68,7 +62,6 @@ io.on('connection', (socket) => {
             assignedPrompts.push(allPrompts[randomPrompt]);
             allPrompts.splice(randomPrompt, 1)
             assigned = true;
-            // console.log('count', allPlayers)
             for(let i = 0; i < allPlayers.length; i++){
               io.to(allPlayers[i].userid).emit('CURR_PLAYER', allPlayers[i]);
             }
