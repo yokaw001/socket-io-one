@@ -70,11 +70,11 @@ class App extends React.Component {
             passcode: this.state.passcode,
             newuser: newuser
         })
-        if(this.state.ques1 && this.state.ques2){
+        if(this.state.ques1 && this.state.ques2){ // bug updating obj for each
             let currPlayer = this.state.currPlayer;
             let promptsObj = currPlayer.prompts;
             let prompts =[];
-            for(let key in prompts){
+            for(let key in promptsObj){
                 prompts.push(key);
             }
             currPlayer.prompts[prompts[0]] = this.state.ques1;
