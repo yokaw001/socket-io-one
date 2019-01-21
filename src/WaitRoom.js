@@ -1,11 +1,15 @@
 import React from 'react';
 
 const WaitRoom = (props) => {
-    let characterList = props.characterList;
+    let playerCount = props.allPlayers.length;
+    let playersLeft = 4-playerCount;
+    if(playerCount === 4){props.handleViewChange("Game")}
     return (
         <div>
-            <div>Count Down Til Blast Off</div>
-            {props.allUsers.map((user, i) => <div><div>{user}</div><img src={characterList[i]} alt="Smiley face" height="42" width="42"/></div>)}
+            <div>{playersLeft} Mas Players Til Blast Off</div>
+            <ul> Current Playas
+                {props.allPlayers.map((user) => <div>{user.username}</div>)}
+            </ul>
         </div>
     )
 }

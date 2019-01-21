@@ -1,7 +1,8 @@
 import React from 'react';
 import Chat from './Chat';
 import Login from './Login';
-import WaitRoom from './WaitRoom'
+import WaitRoom from './WaitRoom';
+import Answer from './Answer';
 import io from "socket.io-client";
 const socket = io('localhost:3000');
 
@@ -15,20 +16,27 @@ class App extends React.Component {
             username: '',
             passcode: '',
             userid:'',
-            signedIn: false,
-            allUsers: [],
+            allPlayers: [],
             currView: "Login",
-            characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
+            currUser: ''
+            // characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
         };
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleViewChange = this.handleViewChange.bind(this);
         socket.on('ALLPLAYERS', (data) => { 
             this.setState({
-                allUsers: data
+                allPlayers: data
             })
-            console.log(this.state.allUsers,'all users')
         });
+        socket.on('PASSCODE', (data) => {
+            this.setState({
+                passcode: data
+            })
+        })
+        socket.on('DENIED_ACCESS', (data)=>{
+            alert(data.error);
+        })
         socket.on('NEW_USER', (data) => {
             if(this.state.userid === ''){
                 this.setState({
@@ -61,7 +69,7 @@ class App extends React.Component {
         })
     }
     handleViewChange = (e) => {
-        let nextView = e.target.title;
+        let nextView = e.target ? e.target.title : e;
         this.setState({
             currView: nextView
         })
@@ -70,9 +78,9 @@ class App extends React.Component {
         let currView = this.state.currView;
         return (
         <div>
-            {currView !== "Login" ? <a></a> : <Login handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
-            {currView !== "WaitRoom" ? <a></a> : <WaitRoom characterList={this.state.characterList} allUsers={this.state.allUsers} handleViewChange={this.handleViewChange}/>}
-            <Chat username={this.state.username} socket={socket}/>
+            {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
+            {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "Answer" ? <a></a> : <Answer allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
         </div>
         );
     }
