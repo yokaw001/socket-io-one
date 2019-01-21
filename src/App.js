@@ -3,6 +3,7 @@ import Chat from './Chat';
 import Login from './Login';
 import WaitRoom from './WaitRoom';
 import Answer from './Answer';
+import Voting from './Voting';
 import io from "socket.io-client";
 const socket = io('localhost:3000');
 
@@ -87,7 +88,8 @@ class App extends React.Component {
         <div>
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
             {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
-            {currView !== "Answer" ? <a></a> : <Answer currPlayer = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "Answer" ? <a></a> : <Answer handleInput={this.handleInput} handleSubmit={this.handleSubmit} currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
+            {currView !== "Voting" ? <a></a> : <Voting currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
         </div>
         );
     }

@@ -13,7 +13,7 @@ let allPlayers = [];
 let playerCount;
 let assignedPrompts = [];
 let assigned = false;
-let allPrompts = ['One word to describe yourself', 'Most epic sandwich name', 'Worst Starbucks drink', 'Best excuse to missing work', 'dummy', 'yeajsdhf', 'asdlfjaldskjf', 'abrrrrrr'];
+let allPrompts = ['One word to describe yourself', 'Most epic sandwich name', 'Worst Starbucks drink', 'Best excuse to missing work', 'your darkest moment', 'best food', 'best cartoon name', 'grandmas secret'];
 
 
 io = socket(server);
@@ -47,22 +47,22 @@ io.on('connection', (socket) => {
         if(playerCount === 4 && assigned === false){ // assign random prompts to two users for comparison
           // idiot figure out a function asap
           // console.log('its hitting')
-            let randomPrompt = Math.floor(Math.random() * (allPrompts.length + 1));
+            let randomPrompt = Math.floor(Math.random() * (allPrompts.length));
             allPlayers[0].prompts[allPrompts[randomPrompt]] = 'answer';
             allPlayers[1].prompts[allPrompts[randomPrompt]] = 'answer';
             assignedPrompts.push(allPrompts[randomPrompt]);
             allPrompts.splice(randomPrompt, 1)
-            randomPrompt = Math.floor(Math.random() * (allPrompts.length + 1));
+            randomPrompt = Math.floor(Math.random() * (allPrompts.length));
             allPlayers[2].prompts[allPrompts[randomPrompt]] = 'answer';
             allPlayers[3].prompts[allPrompts[randomPrompt]] = 'answer';
             assignedPrompts.push(allPrompts[randomPrompt]);
             allPrompts.splice(randomPrompt, 1)
-            randomPrompt = Math.floor(Math.random() * (allPrompts.length + 1));
+            randomPrompt = Math.floor(Math.random() * (allPrompts.length));
             allPlayers[0].prompts[allPrompts[randomPrompt]] = 'answer';
             allPlayers[2].prompts[allPrompts[randomPrompt]] = 'answer';
             assignedPrompts.push(allPrompts[randomPrompt]);
             allPrompts.splice(randomPrompt, 1)
-            randomPrompt = Math.floor(Math.random() * (allPrompts.length + 1));
+            randomPrompt = Math.floor(Math.random() * (allPrompts.length));
             allPlayers[1].prompts[allPrompts[randomPrompt]] = 'answer';
             allPlayers[3].prompts[allPrompts[randomPrompt]] = 'answer';
             assignedPrompts.push(allPrompts[randomPrompt]);
