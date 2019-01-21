@@ -13,6 +13,7 @@ let allPlayers = [];
 let playerCount;
 let assignedPrompts = [];
 let assigned = false;
+let updateCount = 0;
 let allPrompts = ['One word to describe yourself', 'Most epic sandwich name', 'Worst Starbucks drink', 'Best excuse to missing work', 'your darkest moment', 'best food', 'best cartoon name', 'grandmas secret'];
 
 
@@ -65,18 +66,25 @@ io.on('connection', (socket) => {
             for(let i = 0; i < allPlayers.length; i++){
               io.to(allPlayers[i].userid).emit('CURR_PLAYER', allPlayers[i]);
             }
-            io.emit('ALLPLAYERS', allPlayers)
+            io.emit('ALLPLAYERS', allPlayers);
+            io.emit('ASSIGNED_PROMPTS', assignedPrompts);
+
         }
     });
     socket.on('UPDATED_PLAYER', (data)=>{
       let userid = data.userid;
+      updateCount += 1;
       console.log(data, 'datttta')
       for(let i = 0; i < allPlayers.length; i++){
         if(allPlayers[i].userid === userid){
           allPlayers.splice(i, 1, data);
         }
       }
-      console.log(allPlayers, 'current allplayers')
+      console.log('updated version', allPlayers)
+      if(updateCount === 4){
+        io.emit('UPDATED_ALLPLAYERS', allPlayers)
+      }
+      // console.log(allPlayers, 'current allplayers')
     });
    
     socket.on('SEND', (data) => {
