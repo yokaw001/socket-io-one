@@ -65,24 +65,25 @@ io.on('connection', (socket) => {
             for(let i = 0; i < allPlayers.length; i++){
               io.to(allPlayers[i].userid).emit('CURR_PLAYER', allPlayers[i]);
             }
-
             io.emit('ALLPLAYERS', allPlayers)
-        } 
-    })
-
-    // socket.on('NEW_USER', (data) => {
-    //   allPlayers[data.userid] = data.username; //saving socketid username pairs
-    //   console.log(allPlayers, 'dataa')
-    //   // io.emit('RECEIVE_MESSAGE', data);
-    //   io.emit('ALLPLAYERS', allPlayers)
-
+        }
+    });
+    socket.on('UPDATED_PLAYER', (data)=>{
+      let userid = data.userid;
+      console.log(data, 'datttta')
+      for(let i = 0; i < allPlayers.length; i++){
+        if(allPlayers[i].userid === userid){
+          allPlayers.splice(i, 1, data);
+        }
+      }
+      console.log(allPlayers, 'current allplaysers')
+    });
    
     socket.on('SEND', (data) => {
-      console.log(data, 'dataa')
       io.emit('RECEIVE_MESSAGE', data);
     });
     socket.on('disconnect', () => {
-      console.log('client disconnect...', socket.id)
+    console.log('client disconnect...', socket.id)
       let leftUser = socket.id
       for(let i = 0; i < allPlayers.length; i++){
         if(allPlayers[i][leftUser]){
@@ -90,7 +91,6 @@ io.on('connection', (socket) => {
         }
       }
       io.emit('ALLPLAYERS', allPlayers)
-      // handleDisconnect()
     })
 });
 
