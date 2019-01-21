@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
           allPlayers.splice(i, 1, data);
         }
       }
-      console.log(allPlayers, 'current allplaysers')
+      console.log(allPlayers, 'current allplayers')
     });
    
     socket.on('SEND', (data) => {
@@ -93,60 +93,3 @@ io.on('connection', (socket) => {
       io.emit('ALLPLAYERS', allPlayers)
     })
 });
-
-    // client.on('register', handleRegister)
-
-    // client.on('join', handleJoin)
-
-    // client.on('leave', handleLeave)
-
-    // client.on('message', handleMessage)
-
-    // client.on('chatrooms', handleGetChatrooms)
-
-    // client.on('availableUsers', handleGetAvailableUsers)
-
-    // io.on('disconnect', function () {
-    //   console.log('client disconnect...', client.id)
-    //   playerCount--;
-    //   io.emit('COUNT', playerCount);
-    //   // handleDisconnect()
-    // })
-
-    // client.on('error', function (err) {
-    //   console.log('received error from client:', client.id)
-    //   console.log(err)
-    // })
-
-
-// const server = require('http').createServer()
-// const io = require('socket.io')(server)
-
-// io.on('connection', function (client) {
-//   client.on('register', handleRegister)
-
-//   client.on('join', handleJoin)
-
-//   client.on('leave', handleLeave)
-
-//   client.on('message', handleMessage)
-
-//   client.on('chatrooms', handleGetChatrooms)
-
-//   client.on('availableUsers', handleGetAvailableUsers)
-
-//   client.on('disconnect', function () {
-//     console.log('client disconnect...', client.id)
-//     handleDisconnect()
-//   })
-
-//   client.on('error', function (err) {
-//     console.log('received error from client:', client.id)
-//     console.log(err)
-//   })
-// })
-
-// server.listen(3000, function (err) {
-//   if (err) throw err
-//   console.log('listening on port 3000')
-// })
