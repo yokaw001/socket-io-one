@@ -14,6 +14,7 @@ let playerCount;
 let assignedPrompts = [];
 let assigned = false;
 let updateCount = 0;
+let results = {};
 let allPrompts = ['One word to describe yourself', 'Most epic sandwich name', 'Worst Starbucks drink', 'Best excuse to missing work', 'your darkest moment', 'best food', 'best cartoon name', 'grandmas secret'];
 
 
@@ -95,5 +96,17 @@ io.on('connection', (socket) => {
         }
       }
       io.emit('ALLPLAYERS', allPlayers)
+    });
+    socket.on('RESULT', (data) => {
+      let userdata = data.updated; // user obj with the score 
+      let prompt = data.prompt; // which prompt the vote came from 
+      let voter = data.voter;
+      results[prompt] ? results[prompt] = results[prompt].push(voter) : results[prompt] = [voter];
+      
+      for ( let i = 0; i < allPlayers.length; i++ ){
+        if(userdata.userid === allPlayers[i].userid){
+          allPlayers[i].prompts = allPlayers[i].prompts += 1;
+        }
+      }
     })
 });

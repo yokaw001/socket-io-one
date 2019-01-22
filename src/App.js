@@ -42,6 +42,7 @@ class App extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleViewChange = this.handleViewChange.bind(this);
+        this.handleResults = this.handleResults.bind(this);
         socket.on('ALLPLAYERS', (data) => { 
             this.setState({
                 allPlayers: data
@@ -112,12 +113,30 @@ class App extends React.Component {
                 currView: "VoteUno"
             })
         }
+        if (seconds == 0 && this.state.currView === "VoteUno") { 
+            clearInterval(this.timer);
+            // show results 
+            // set time out then setstate to next page
+            // this.setState({
+            //     currView: "VoteDos"
+            // })
+        }
     }
+    handleResults(voted) { // figure this shit out HERRRRE
+        let userdata = voted.updated;
+        userdata.points = userdata.points += 1; // do we even need to do this here?
+        socket.emit('RESULT', {
+            updated: userdata,
+            prompt: voted.prompt,
+            voter: voted.voter
+        });
+    }
+
     handleInput = (e) => {
         let name = e.target.id;
         this.setState({
             [name]: e.target.value
-        })
+        });
     }
     handleSubmit = (e) => {
         let changeView = e.target.title;
@@ -131,7 +150,7 @@ class App extends React.Component {
            socket.emit('JOIN_GAME', {
                passcode: this.state.passcode,
                newuser: newuser
-           })
+           });
        }
         if(this.state.ques1 && this.state.ques2){ // bug updating obj for each
             let currPlayer = this.state.currPlayer;
@@ -142,7 +161,7 @@ class App extends React.Component {
             }
             currPlayer.prompts[prompts[0]] = this.state.ques1;
             currPlayer.prompts[prompts[1]] = this.state.ques2;
-            socket.emit('UPDATED_PLAYER', currPlayer)
+            socket.emit('UPDATED_PLAYER', currPlayer);
         }
     }
 
@@ -150,17 +169,17 @@ class App extends React.Component {
         let nextView = e.target ? e.target.title : e;
         this.setState({
             currView: nextView
-        })
+        });
     }
     render() {
-        let currView = this.state.currView
+        let currView = this.state.currView;
     
         return (
         <div>
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
             {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "Answer" ? <a></a> : <Answer startTimer = {this.startTimer} seconds={this.state.time} handleInput={this.handleInput} handleSubmit={this.handleSubmit} currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
-            {currView !== "VoteUno" ? <a></a> : <VoteUno vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteUno" ? <a></a> : <VoteUno handleResults = {this.handleResults} currPlayer = {this.state.currPlayer} vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteDos" ? <a></a> : <VoteDos vote2 = {this.state.vote2} assignedPrompt = {this.state.assignedPrompts[1]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteTres" ? <a></a> : <VoteTres vote3 = {this.state.vote3} assignedPrompt = {this.state.assignedPrompts[2]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteQuat" ? <a></a> : <VoteQuat vote4 = {this.state.vote4} assignedPrompt = {this.state.assignedPrompts[3]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
