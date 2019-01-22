@@ -93,10 +93,12 @@ class App extends React.Component {
             currView: changeView
         })
         let newuser = {userid: this.state.userid, username: this.state.username, points: 0, prompts: {}};
-        socket.emit('JOIN_GAME', {
-            passcode: this.state.passcode,
-            newuser: newuser
-        })
+       if(changeView === 'WaitRoom'){
+           socket.emit('JOIN_GAME', {
+               passcode: this.state.passcode,
+               newuser: newuser
+           })
+       }
         if(this.state.ques1 && this.state.ques2){ // bug updating obj for each
             let currPlayer = this.state.currPlayer;
             let promptsObj = currPlayer.prompts;
@@ -106,6 +108,7 @@ class App extends React.Component {
             }
             currPlayer.prompts[prompts[0]] = this.state.ques1;
             currPlayer.prompts[prompts[1]] = this.state.ques2;
+            console.log(currPlayer, 'currPlayer on app side')
             socket.emit('UPDATED_PLAYER', currPlayer)
         }
     }

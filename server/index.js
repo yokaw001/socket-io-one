@@ -28,14 +28,17 @@ io.on('connection', (socket) => {
       let userObj = data.newuser;
       if(!serverPasscode){
         serverPasscode = passcode;
+        console.log('unexepcted hitttt1')
         allPlayers.push(userObj);
         io.emit('ALLPLAYERS', allPlayers)
         playerCount = allPlayers.length;
       }
       else if (serverPasscode === passcode){
+        console.log('unexepcted hitttt2')
         allPlayers.push(userObj);
         io.emit('ALLPLAYERS', allPlayers);
         playerCount = allPlayers.length;
+
       } else {
         socket.emit('DENIED_ACCESS', {"error" : "wrong passcode"})
       }
@@ -72,17 +75,23 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('UPDATED_PLAYER', (data)=>{
-      let userid = data.userid;
+      let userid = data.userid; // id of updated player from individual app
+      console.log(data, 'data is here')
+      console.log(userid, 'userid is here')
       updateCount += 1;
-      console.log(data, 'datttta')
+      console.log(allPlayers, 'allplayers before the forloop')
       for(let i = 0; i < allPlayers.length; i++){
+        console.log(allPlayers, 'allplayers after each iteration')
         if(allPlayers[i].userid === userid){
+          console.log('its hitting here tho')
           allPlayers.splice(i, 1, data);
+          console.log(allPlayers, 'allplayers after splice')
         }
       }
-      console.log('updated version', allPlayers)
+      console.log(allPlayers, 'allplayes after forloop updatedplayer')
       if(updateCount === 4){
         io.emit('UPDATED_ALLPLAYERS', allPlayers)
+        console.log(allPlayers, 'allPlayers at updatecount===4')
       }
       // console.log(allPlayers, 'current allplayers')
     });
