@@ -3,7 +3,6 @@ import Chat from './Chat';
 import Login from './Login';
 import WaitRoom from './WaitRoom';
 import Answer from './Answer';
-// import Voting from './Voting/Voting';
 import VoteUno from './Voting/VoteUno';
 import VoteDos from './Voting/VoteDos';
 import VoteTres from './Voting/VoteTres';
@@ -27,15 +26,23 @@ class App extends React.Component {
             allPromptPairs:[],
             ques1: '',
             ques2: '',
+            vote1: '',
+            vote2: '',
+            vote3: '',
+            vote4: '',
             currView: "Login",
-            currPlayer: ''
+            currPlayer: '',
+            time: {},
+            seconds: 20
             // characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
         };
+        this.timer = 0;
+        this.startTimer = this.startTimer.bind(this);
+        this.countDown = this.countDown.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleViewChange = this.handleViewChange.bind(this);
         socket.on('ALLPLAYERS', (data) => { 
-            console.log('allplayers bug?', data)
             this.setState({
                 allPlayers: data
             });
@@ -49,17 +56,22 @@ class App extends React.Component {
             this.setState({
                 allPlayers: data
             });
-            console.log('thisallplayers', this.state.allPlayers)
             let answerQuesPair = this.state.allPlayers.map(player => player.prompts);
-            console.log('its littttt', answerQuesPair)
             this.setState({
                 allPromptPairs : answerQuesPair
-            })
+            });
+            for( let i = 0; i < this.state.assignedPrompts.length; i++ ) {
+                let statename = 'vote' + (i+1);
+                let filtered = this.state.allPlayers.filter(player => player.prompts[this.state.assignedPrompts[i]]);
+                this.setState({
+                    [statename] : filtered
+                });
+            }
         });
         socket.on('CURR_PLAYER', (data) => {
             this.setState({
                 currPlayer: data
-            }, ()=>console.log(data, 'currplayer here cuhhh'));
+            });
         });
         socket.on('PASSCODE', (data) => {
             this.setState({
@@ -76,11 +88,31 @@ class App extends React.Component {
                 });
             } 
         });  
-        // for( let i = 0; i < this.state.assignedPrompts.length; i++ ){
-        //     for( let key in )
-        // }
     }
-
+    componentDidMount() {
+        this.setState({ time: this.state.seconds });
+      }
+    
+    startTimer() {
+        if (this.timer == 0 && this.state.seconds > 0) {
+            this.timer = setInterval(this.countDown, 1000);
+        }
+    }
+    
+    countDown() {
+        let seconds = this.state.seconds - 1;
+        this.setState({
+            time: seconds,
+            seconds: seconds,
+        });
+        
+        if (seconds == 0 && this.state.currView === "Answer") { 
+            clearInterval(this.timer);
+            this.setState({
+                currView: "VoteUno"
+            })
+        }
+    }
     handleInput = (e) => {
         let name = e.target.id;
         this.setState({
@@ -89,9 +121,11 @@ class App extends React.Component {
     }
     handleSubmit = (e) => {
         let changeView = e.target.title;
-        this.setState({
-            currView: changeView
-        })
+        if(changeView){
+            this.setState({
+                currView: changeView
+            });
+        }
         let newuser = {userid: this.state.userid, username: this.state.username, points: 0, prompts: {}};
        if(changeView === 'WaitRoom'){
            socket.emit('JOIN_GAME', {
@@ -108,13 +142,10 @@ class App extends React.Component {
             }
             currPlayer.prompts[prompts[0]] = this.state.ques1;
             currPlayer.prompts[prompts[1]] = this.state.ques2;
-            console.log(currPlayer, 'currPlayer on app side')
             socket.emit('UPDATED_PLAYER', currPlayer)
         }
     }
-    handleVote = () => {
 
-    }
     handleViewChange = (e) => {
         let nextView = e.target ? e.target.title : e;
         this.setState({
@@ -122,18 +153,17 @@ class App extends React.Component {
         })
     }
     render() {
-        let currView = this.state.currView;
-        console.log('ques1', this.state.ques1, 'ques2', this.state.ques2)
+        let currView = this.state.currView
+    
         return (
         <div>
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
             {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
-            {currView !== "Answer" ? <a></a> : <Answer handleInput={this.handleInput} handleSubmit={this.handleSubmit} currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
-            {/* {currView !== "Voting" ? <a></a> : <Voting currPlayer = {this.state.currPlayer} assignedPrompts = {this.state.assignedPrompts} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>} */}
-            {currView !== "VoteUno" ? <a></a> : <VoteUno currPlayer = {this.state.currPlayer} assignedPrompts = {this.state.assignedPrompts} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
-            {currView !== "VoteDos" ? <a></a> : <VoteDos currPlayer = {this.state.currPlayer} assignedPrompts = {this.state.assignedPrompts} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
-            {currView !== "VoteTres" ? <a></a> : <VoteTres currPlayer = {this.state.currPlayer} assignedPrompts = {this.state.assignedPrompts} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
-            {currView !== "VoteQuat" ? <a></a> : <VoteQuat currPlayer = {this.state.currPlayer} assignedPrompts = {this.state.assignedPrompts} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "Answer" ? <a></a> : <Answer startTimer = {this.startTimer} seconds={this.state.time} handleInput={this.handleInput} handleSubmit={this.handleSubmit} currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteUno" ? <a></a> : <VoteUno vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteDos" ? <a></a> : <VoteDos vote2 = {this.state.vote2} assignedPrompt = {this.state.assignedPrompts[1]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteTres" ? <a></a> : <VoteTres vote3 = {this.state.vote3} assignedPrompt = {this.state.assignedPrompts[2]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteQuat" ? <a></a> : <VoteQuat vote4 = {this.state.vote4} assignedPrompt = {this.state.assignedPrompts[3]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
         </div>
         );
     }
