@@ -115,8 +115,10 @@ io.on('connection', (socket) => {
 
       if(!voteTally[number]){
         voteTally[number] = {};
-        voteTally[number][votedAnswer] = [voterName]
-      } else if (voteTally[number][votedAnswer]) {
+        voteTally[number][votedAnswer] = [voterName];
+      } else if (!voteTally[number][votedAnswer]) {
+        voteTally[number][votedAnswer] = [voterName];
+      } else {
         voteTally[number][votedAnswer].push(voterName);
       }
 
