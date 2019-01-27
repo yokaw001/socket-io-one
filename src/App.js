@@ -33,7 +33,8 @@ class App extends React.Component {
             currView: "Login",
             currPlayer: '',
             time: {},
-            seconds: 20
+            seconds: 20,
+            votedPrompt1: {}
             // characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
         };
         this.timer = 0;
@@ -61,7 +62,7 @@ class App extends React.Component {
             this.setState({
                 allPromptPairs : answerQuesPair
             });
-            for( let i = 0; i < this.state.assignedPrompts.length; i++ ) {
+            for( let i = 0; i < this.state.assignedPrompts.length; i++ ) { 
                 let statename = 'vote' + (i+1);
                 let filtered = this.state.allPlayers.filter(player => player.prompts[this.state.assignedPrompts[i]]);
                 this.setState({
@@ -89,6 +90,10 @@ class App extends React.Component {
                 });
             } 
         });  
+        socket.on('RESULTS_VOTE', (data) => {
+
+            console.log(data, 'data results vote')
+        })
     }
     componentDidMount() {
         this.setState({ time: this.state.seconds });
@@ -124,11 +129,16 @@ class App extends React.Component {
     }
     handleResults(voted) { // figure this shit out HERRRRE
         let userdata = voted.updated;
-        userdata.points = userdata.points += 1; // do we even need to do this here?
+        let votedfor = voted.votedfor; // obj with prompt and answer pair as obj
+        let voter = voted.voter;
+        let number = voted.number;
+        // console.log('voted', voted)
+        // console.log('votedfor', votedfor)
         socket.emit('RESULT', {
-            updated: userdata,
-            prompt: voted.prompt,
-            voter: voted.voter
+            'number': number,
+            'userdatafortally': userdata,
+            'votedfor': votedfor,
+            'voter': voter
         });
     }
 
@@ -179,7 +189,7 @@ class App extends React.Component {
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
             {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "Answer" ? <a></a> : <Answer startTimer = {this.startTimer} seconds={this.state.time} handleInput={this.handleInput} handleSubmit={this.handleSubmit} currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
-            {currView !== "VoteUno" ? <a></a> : <VoteUno handleResults = {this.handleResults} currPlayer = {this.state.currPlayer} vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteUno" ? <a></a> : <VoteUno handleResults = {this.handleResults} number = {1} currPlayer = {this.state.currPlayer} vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteDos" ? <a></a> : <VoteDos vote2 = {this.state.vote2} assignedPrompt = {this.state.assignedPrompts[1]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteTres" ? <a></a> : <VoteTres vote3 = {this.state.vote3} assignedPrompt = {this.state.assignedPrompts[2]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteQuat" ? <a></a> : <VoteQuat vote4 = {this.state.vote4} assignedPrompt = {this.state.assignedPrompts[3]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}

@@ -6,20 +6,23 @@ const VoteUno = (props) => { // Fix this hardcoding shit bruh
    let currPlayer = props.currPlayer;
    let first;
    let second;
+   let prompt = props.assignedPrompt;
+   // vote 1 containers filtered players that have current prompt
 
    if (currPlayer.userid === props.vote1[0].userid || currPlayer.userid === props.vote1[1].userid) {
     first = 'Waiting for Voting';
     second = '';
    } else {
-    first = props.vote1[0].prompts[props.assignedPrompt];
-    second = props.vote1[1].prompts[props.assignedPrompt];
-   }
+    first = props.vote1[0].prompts[prompt];
+    second = props.vote1[1].prompts[prompt];
+   } 
+   // MAKE IT ONLY CLICKABLE 1X...!
     return (
         <div>
-            <h3>{props.assignedPrompt}</h3>
-            <div> // fix this part follow it.... wha tdo i need to track the winner of this round and to keep total score in each user obj
-                <div onClick={() => props.handleResults({updated: props.vote1[0], answer: 0, voter: currPlayer})}>{first}</div>
-                <div onClick={() => props.handleResults({updated: props.vote1[1], answer: 1, voter: currPlayer})}>{second}</div>
+            <h3>{props.assignedPrompt}</h3> /
+            <div> 
+                <div onClick={() => props.handleResults({number: props.number, updated: props.vote1[0], votedfor: {prompt: prompt, answer: props.vote1[0].prompts[prompt]}, voter: currPlayer})}>{first}</div>
+                <div onClick={() => props.handleResults({number: props.number, updated: props.vote1[1], votedfor: {prompt: prompt, answer: props.vote1[1].prompts[prompt]}, voter: currPlayer})}>{second}</div>
             </div>
         </div>
     )
