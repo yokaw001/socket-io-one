@@ -3,8 +3,8 @@ const app = express();
 const path = require('path');
 const socket = require('socket.io');
 
-server = app.listen(3000, function(){
-    console.log('server is running on port 3000')
+server = app.listen(9000, function(){
+    console.log('server is running on port 9000')
 });
 app.use(express.static(path.join(__dirname, '../client/dist')));
 

@@ -9,7 +9,7 @@ import VoteTres from './Voting/VoteTres';
 import VoteQuat from './Voting/VoteQuat';
 
 import io from "socket.io-client";
-const socket = io('localhost:3000');
+const socket = io('localhost:9000');
 
 
 
@@ -33,8 +33,9 @@ class App extends React.Component {
             currView: "Login",
             currPlayer: '',
             time: {},
-            seconds: 20,
-            votedPrompt1: {}
+            seconds: 30,
+            votedPrompt1: {},
+            results: {},
             // characterList: ["../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png", "../characters/logo-character.png"]
         };
         this.timer = 0;
@@ -91,7 +92,9 @@ class App extends React.Component {
             } 
         });  
         socket.on('RESULTS_VOTE', (data) => {
-
+            this.setState({
+                results: data,
+            })
             console.log(data, 'data results vote')
         })
     }
@@ -189,10 +192,11 @@ class App extends React.Component {
             {currView !== "Login" ? <a></a> : <Login passcode={this.state.passcode} handleInput = {this.handleInput} handleViewChange={this.handleViewChange} handleSubmit={this.handleSubmit}/>}
             {currView !== "WaitRoom" ? <a></a> : <WaitRoom allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "Answer" ? <a></a> : <Answer startTimer = {this.startTimer} seconds={this.state.time} handleInput={this.handleInput} handleSubmit={this.handleSubmit} currPlayer = {this.state.currPlayer} handleViewChange={this.handleViewChange}/>}
-            {currView !== "VoteUno" ? <a></a> : <VoteUno handleResults = {this.handleResults} number = {1} currPlayer = {this.state.currPlayer} vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {currView !== "VoteUno" ? <a></a> : <VoteUno results = {this.state.results} handleResults = {this.handleResults} number = {1} currPlayer = {this.state.currPlayer} vote1 = {this.state.vote1} startTimer = {this.startTimer} seconds={this.state.time} assignedPrompt = {this.state.assignedPrompts[0]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteDos" ? <a></a> : <VoteDos vote2 = {this.state.vote2} assignedPrompt = {this.state.assignedPrompts[1]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteTres" ? <a></a> : <VoteTres vote3 = {this.state.vote3} assignedPrompt = {this.state.assignedPrompts[2]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
             {currView !== "VoteQuat" ? <a></a> : <VoteQuat vote4 = {this.state.vote4} assignedPrompt = {this.state.assignedPrompts[3]} allPlayers = {this.state.allPlayers} handleViewChange={this.handleViewChange}/>}
+            {/* {currView !== "Results" ? <a></a> : <Results handleViewChange={this.handleViewChange}/>} */}
         </div>
         );
     }
